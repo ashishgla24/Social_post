@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, session, url_for
+from flask import Flask, render_template, request, redirect, session, url_for, flash
 from flask_login import LoginManager, current_user, login_required, login_user, logout_user
 from model.users import Users
 from model.users import db
@@ -50,29 +50,34 @@ def register():
         user.set_password(password)
         db.session.add(user)
         db.session.commit()
-        return render_template(
-            "login.html", message="Registration successful! Please log in."
-        )
+        flash("Registration successful! Please log in.", "success")
+        return redirect(url_for("login"))
     return render_template("register.html", form=form)
 
 
 @app.route("/login", methods=["GET", "POST"])
 def login():
+    from flask import get_flashed_messages
+    message = None
+    flashed = get_flashed_messages(with_categories=True)
+    for category, msg in flashed:
+        if category == "success":
+            message = msg
     if request.method == "POST":
         username = request.form.get("username")
         user = Users.query.filter_by(username=username).first()
         if user and user.check_password(request.form.get("password")):
             login_user(user)
             return redirect(url_for("dashboard", user_id=user.id))
-        return render_template("login.html", error="Invalid credentials")
+        return render_template("login.html", error="Invalid credentials", message=message)
 
-    return render_template("login.html")
+    return render_template("login.html", message=message)
 
 
 @app.route("/dashboard/<int:user_id>")
 @login_required
 def dashboard(user_id):
-    return render_template("dashboard.html", user_id=user_id, current_user=current_user.username)
+    return render_template("interactive_dashboard.html", user_id=user_id, current_user=current_user.username)
 
 
 @app.route("/logout", methods=["POST"])

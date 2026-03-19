@@ -1,0 +1,100 @@
+{% extends 'base.html' %}
+{% block title %}Interactive Dashboard{% endblock %}
+{% block head %}
+    <style>
+        .dashboard-container {
+            margin: 40px auto;
+            max-width: 700px;
+            background: rgba(255,255,255,0.85);
+            border-radius: 18px;
+            box-shadow: 0 4px 32px rgba(0,0,0,0.10);
+            padding: 40px 32px;
+        }
+        .dashboard-title {
+            font-size: 2.2rem;
+            font-weight: 700;
+            margin-bottom: 32px;
+            color: #0a58ca;
+        }
+        .dashboard-actions .btn {
+            min-width: 180px;
+            margin-bottom: 18px;
+        }
+    </style>
+{% endblock %}
+{% block content %}
+<div class="dashboard-container">
+    <div class="dashboard-title">Welcome, {{ current_user.username if current_user.is_authenticated else 'Guest' }}!</div>
+    <div class="row dashboard-actions justify-content-center">
+        <div class="col-md-6 col-12">
+            <form method="post" action="/add_member">
+                <button type="submit" class="btn btn-neon w-100">Add Member</button>
+            </form>
+        </div>
+        <div class="col-md-6 col-12">
+            <form method="post" action="/add_account">
+                <button type="submit" class="btn btn-primary w-100">Add Account</button>
+            </form>
+        </div>
+        <div class="col-md-6 col-12">
+            <form method="post" action="/delete_account/{{ current_user.id }}">
+                <button type="submit" class="btn btn-danger w-100">Delete Account</button>
+            </form>
+        </div>
+        <div class="col-md-6 col-12">
+            <form method="get" action="/update_email/{{ current_user.id }}">
+                <button type="submit" class="btn btn-outline-info w-100">Update Email</button>
+            </form>
+        </div>
+    </div>
+    <div class="d-flex flex-wrap justify-content-center gap-3 mt-4">
+        <a href="{{ url_for('register') }}" class="btn btn-outline-secondary">Go to Register</a>
+        <a href="{{ url_for('login') }}" class="btn btn-outline-secondary">Login Again</a>
+        <form method="post" action="/logout" class="d-inline">
+            <button type="submit" class="btn btn-secondary">Logout</button>
+        </form>
+    </div>
+</div>
+{% endblock %}
+{% block scripts %}
+<script>
+    const barData = {
+        labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+        datasets: [{
+            label: 'Posts',
+            data: [12, 19, 3, 5, 2, 3],
+            backgroundColor: 'rgba(54, 162, 235, 0.7)'
+        }]
+    };
+    // ...existing chart.js code...
+</script>
+{% endblock %}
+            }]
+        };
+        const pieData = {
+            labels: ['Active', 'Inactive', 'Pending'],
+            datasets: [{
+                data: [300, 50, 100],
+                backgroundColor: [
+                    'rgba(75, 192, 192, 0.7)',
+                    'rgba(255, 99, 132, 0.7)',
+                    'rgba(255, 205, 86, 0.7)'
+                ]
+            }]
+        };
+        const lineData = {
+            labels: ['Week 1', 'Week 2', 'Week 3', 'Week 4'],
+            datasets: [{
+                label: 'User Signups',
+                data: [10, 15, 8, 12],
+                fill: false,
+                borderColor: 'rgba(153, 102, 255, 0.7)',
+                tension: 0.1
+            }]
+        };
+        new Chart(document.getElementById('barChart'), { type: 'bar', data: barData });
+        new Chart(document.getElementById('pieChart'), { type: 'pie', data: pieData });
+        new Chart(document.getElementById('lineChart'), { type: 'line', data: lineData });
+    </script>
+</body>
+</html>

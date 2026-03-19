@@ -1,17 +1,19 @@
-<html>
-
-<head>
-    <title>Update Email</title>
-</head>
-
-<body>
-    <h1>Update Email for User ID: {{ user.id }}</h1>
-    <form method="post" action="/update_email/{{ user.id }}">
+{% extends 'base.html' %}
+{% block title %}Update Email{% endblock %}
+{% block content %}
+<div class="container py-4">
+    <h1 class="mb-4">Update Email for User ID: {{ user.id }}</h1>
+    <form method="post" action="/update_email/{{ user.id }}" class="card p-4 shadow-sm">
         <input type="hidden" name="user_id" value="{{ user_id }}">
-        <label for="old_email">{{ user.email }}</label>
-        <input type="email" id="new_email" name="new_email" required><br><br>
-        <input type="submit" value="Update Email">
+        <div class="mb-3">
+            <label for="old_email" class="form-label">Current Email:</label>
+            <input type="text" id="old_email" class="form-control" value="{{ user.email }}" readonly>
+        </div>
+        <div class="mb-3">
+            <label for="new_email" class="form-label">New Email:</label>
+            <input type="email" id="new_email" name="new_email" class="form-control" required>
+        </div>
+        <button type="submit" class="btn btn-primary">Update Email</button>
     </form>
-</body>
-
-</html>
+</div>
+{% endblock %}
